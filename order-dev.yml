@@ -1,0 +1,121 @@
+# sys config
+sys:
+  file-upload-path: C:/uploads
+# server config
+server:
+  port: 8087
+  # context-path为请求前缀（必须）
+  servlet:
+    context-path: /api
+# druid主数据源
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    # jdbc source config
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://10.10.10.10:3306/hnlg?useUnicode=true&useSSL=false&allowMultiQueries=true&characterEncoding=utf8
+    username: root
+    password: mlnsoft
+    # druid
+    druid:
+      initial-size: 5
+      min-idle: 5
+      # 最大连接池数量
+      max-active: 20
+      # 获取连接等待超时的时间
+      max-wait: 60000
+      # 间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      # 一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      # 验证数据库连接的查询语句,如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用
+      # hsqldb	select 1 from INFORMATION_SCHEMA.SYSTEM_USERS
+      # Oracle	select 1 from dual
+      # DB2	select 1 from sysibm.sysdummy1
+      # MySql	select 1
+      # Microsoft SqlServer	select1
+      # postgresql	select version()
+      # ingres	select 1
+      # derby	values 1
+      # H2	select 1
+      validation-query: SELECT 1
+      # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-while-idle: true
+      # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-borrow: false
+      # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      test-on-return: false
+      # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+      pool-prepared-statements: true
+      # PSCache的大小
+      max-pool-prepared-statement-per-connection-size: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall
+      filter:
+        stat:
+          slow-sql-millis: 5000
+          merge-sql: true
+      connection-properties:
+      # 合并多个DruidDataSource的监控数据
+      use-global-data-source-stat: true
+  devtools:
+    restart:
+      enabled: false
+      additional-paths: src/main/java
+# development env set false
+    cache: false
+# redis config
+  redis:
+    database: 0 #Redis数据库索引（默认为0）
+    host: 127.0.0.1 #Redis服务器地址
+    port: 6379 #Redis服务器连接端口
+    password: #Redis服务器连接密码（默认为空）
+    jedis:
+      pool:
+        max-active: 8 #连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 8 #连接池中的最大空闲连接
+        min-idle: 0 #连接池中的最小空闲连接
+    timeout: 5000ms #连接超时时间（毫秒）
+    ssl: false
+# ehcache config
+  cache:
+    type: ehcache
+    ehcache:
+      config: ehcache.xml
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+# ThreadPool config
+thread-pool:
+  core-pool-size: 10
+  max-pool-size: 20
+  queue-capacity: 1000
+  keep-alive-seconds: 300
+# Druid 监控config http://127.0.0.1:8087/druid/sql.html
+druid:
+# 白名单
+  allow:
+# 黑名单
+  deny: 192.168.1.73
+  loginUsername: admin
+  loginPassword: mlnsoft
+# 禁用HTML页面上的“Reset All”功能
+  resetEnable: false
+  exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+# log config
+logging:
+  path: LOG_HOME
+# mybatis plus config
+mybatis-plus:
+  mapper-locations: classpath*:/com/mln/**/mapper/*.xml
+  global-config:
+# 公共字段填充 注入
+    meta-object-handler: com.mln.frame.config.MyMetaObjectHandler
+# print sql log
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+# 工作流自动调度 默认关闭
+flowable:
+  async-executor-activate: false
